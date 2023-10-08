@@ -44,9 +44,12 @@ function toggle_nvidia {
     
     if (( value == $desaturate_value )); then
 	value=0
+	bash $(grep -E ^feh .xinitrc)
 	toggle_mode="color"
     else
 	value=$desaturate_value
+	convert $(tail -n1 ~/.fehbg | cut -d " " -f4| sed "s/'//g") -fuzz 5% -colorspace gray /tmp/result.wepb
+	feh --bg-scale /tmp/result.wepb
 	toggle_mode="grayscale"
     fi
 
@@ -74,6 +77,7 @@ function toggle_compositor {
 	pkill -x $compositor
 	sleep 1
 	$compositor $* -b
+	bash $(grep -E ^feh .xinitrc)
 	toggle_mode="color"
     else
 	pkill -x $compositor
@@ -110,7 +114,8 @@ EOF
 
 	fi
 	    
-	    
+	convert $(tail -n1 ~/.fehbg | cut -d " " -f4| sed "s/'//g") -fuzz 5% -colorspace gray /tmp/result.wepb
+        feh --bg-scale /tmp/result.wepb
 	toggle_mode="grayscale"
     fi
 }
@@ -145,6 +150,7 @@ function toggle_ddc {
     if (( cur_saturation == desaturate_value  )); then
 	new_saturation=$(( max_saturation / 2 )) # nominal saturation 
 	toggle_mode="color"
+	echo "Hello"
     else
         new_saturation=$desaturate_value
 	toggle_mode="grayscale"
